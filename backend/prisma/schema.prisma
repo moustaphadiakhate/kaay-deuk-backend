@@ -1,0 +1,167 @@
+// schema.prisma — KaayDeuk
+// Modifié : Image et Image3D remplacés par Json dans Logement
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Utilisateur {
+  id              Int      @id @default(autoincrement())
+  nom             String
+  email           String   @unique
+  telephone       String
+  motDePasse      String
+  typeUtilisateur String
+  dateCreation    DateTime @default(now())
+
+  chercheur      Chercheur?
+  administrateur Administrateur?
+
+  @@map("utilisateurs")
+}
+
+model Chercheur {
+  id            Int         @id @default(autoincrement())
+  utilisateurId Int         @unique
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  favoris      Favori[]
+  reservations Reservation[]
+  visites3D    Visite3D[]
+  locataire    Locataire?
+
+  @@map("chercheurs")
+}
+
+model Administrateur {
+  id            Int         @id @default(autoincrement())
+  utilisateurId Int         @unique
+  rib           String
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+
+  logements Logement[]
+
+  @@map("administrateurs")
+}
+
+model Locataire {
+  id               Int       @id @default(autoincrement())
+  chercheurId      Int       @unique
+  dateDebutContrat DateTime?
+  caution          Float?
+  chercheur        Chercheur @relation(fields: [chercheurId], references: [id], onDelete: Cascade)
+
+  paiements Paiement[]
+
+  @@map("locataires")
+}
+
+model TypeLogement {
+  id      Int    @id @default(autoincrement())
+  libelle String @unique
+
+  logements Logement[]
+
+  @@map("types_logement")
+}
+
+// images  : Json  — tableau d'objets { url, description?, ordreAffichage }
+// images3D: Json  — tableau d'objets { url, description?, ordreAffichage, type }
+model Logement {
+  id           Int      @id @default(autoincrement())
+  titre        String
+  description  String?
+  prix         Float
+  adresse      String
+  ville        String
+  superficie   Float
+  nombrePieces Int
+  disponible   Boolean  @default(true)
+  caution      Float?
+  images       Json     @default("[]")
+  images3D     Json     @default("[]")
+  dateCreation DateTime @default(now())
+
+  administrateurId Int
+  typeLogementId   Int
+
+  administrateur Administrateur @relation(fields: [administrateurId], references: [id], onDelete: Restrict)
+  typeLogement   TypeLogement   @relation(fields: [typeLogementId], references: [id], onDelete: Restrict)
+
+  favoris      Favori[]
+  reservations Reservation[]
+  visites3D    Visite3D[]
+
+  @@map("logements")
+}
+
+model Favori {
+  id        Int      @id @default(autoincrement())
+  dateAjout DateTime @default(now())
+
+  chercheurId Int
+  logementId  Int
+
+  chercheur Chercheur @relation(fields: [chercheurId], references: [id], onDelete: Cascade)
+  logement  Logement  @relation(fields: [logementId], references: [id], onDelete: Cascade)
+
+  @@unique([chercheurId, logementId])
+  @@map("favoris")
+}
+
+model Reservation {
+  id              Int      @id @default(autoincrement())
+  dateDebut       DateTime
+  dateFin         DateTime
+  statut          String   @default("EN_ATTENTE")
+  montantTotal    Float
+  acompte         Float?
+  dateReservation DateTime @default(now())
+
+  chercheurId Int
+  logementId  Int
+
+  chercheur Chercheur @relation(fields: [chercheurId], references: [id], onDelete: Restrict)
+  logement  Logement  @relation(fields: [logementId], references: [id], onDelete: Restrict)
+
+  paiements Paiement[]
+
+  @@map("reservations")
+}
+
+model Paiement {
+  id                   Int       @id @default(autoincrement())
+  datePaiement         DateTime?
+  montant              Float
+  methode              String
+  statut               String    @default("EN_ATTENTE")
+  referenceTransaction String?   @unique
+  dateCreation         DateTime  @default(now())
+
+  locataireId   Int
+  reservationId Int?
+
+  locataire   Locataire    @relation(fields: [locataireId], references: [id], onDelete: Restrict)
+  reservation Reservation? @relation(fields: [reservationId], references: [id], onDelete: SetNull)
+
+  @@map("paiements")
+}
+
+model Visite3D {
+  id          Int      @id @default(autoincrement())
+  dureeVisite Int      @default(0)
+  dateVisite  DateTime @default(now())
+
+  chercheurId Int
+  logementId  Int
+
+  chercheur Chercheur @relation(fields: [chercheurId], references: [id], onDelete: Cascade)
+  logement  Logement  @relation(fields: [logementId], references: [id], onDelete: Cascade)
+
+  @@map("visites_3d")
+}
