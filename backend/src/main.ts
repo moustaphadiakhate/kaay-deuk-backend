@@ -6,6 +6,7 @@ import * as compression from 'compression';
 import helmet from 'helmet';
 import * as express from 'express';
 import { join } from 'path';
+import { mkdirSync } from 'fs';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -37,9 +38,16 @@ async function bootstrap(): Promise<void> {
     credentials: true,
   });
 
+  // ── Dossier uploads (créé si nécessaire) ─────────────────────────────────
+  const uploadsDir = join(process.cwd(), 'uploads');
+  mkdirSync(uploadsDir, { recursive: true });
+
   // ── Fichiers statiques (avant le préfixe API) ──────────────────────────────
   const httpAdapter = app.getHttpAdapter();
   const expressApp = httpAdapter.getInstance() as express.Application;
+
+  // Fichiers uploadés (images logements)
+  expressApp.use('/uploads', express.static(uploadsDir, { maxAge: '7d' }));
 
   // Landing page au root
   const publicDir = join(__dirname, '..', 'public');
@@ -81,6 +89,11 @@ async function bootstrap(): Promise<void> {
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'JWT-auth')
     .addTag('auth', 'Authentification admin')
     .addTag('logements', 'CRUD Logements')
+    .addTag('uploads', 'Upload images')
+    .addTag('admins', 'Gestion des admins')
+    .addTag('reservations', 'Gestion des réservations')
+    .addTag('utilisateurs', 'Gestion des utilisateurs')
+    .addTag('paiements', 'Gestion des paiements')
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

@@ -94,19 +94,19 @@ export const dataProvider: DataProvider = {
   },
 
   create: async (resource: string, params: CreateParams) => {
-    const data = await httpClient(`${API_URL}/${resource}`, {
+    const result = await httpClient(`${API_URL}/${resource}`, {
       method: 'POST',
       body: JSON.stringify(params.data),
     });
-    return { data };
+    return { data: result };
   },
 
   update: async (resource: string, params: UpdateParams) => {
-    const data = await httpClient(`${API_URL}/${resource}/${params.id}`, {
+    const result = await httpClient(`${API_URL}/${resource}/${params.id}`, {
       method: 'PUT',
       body: JSON.stringify(params.data),
     });
-    return { data };
+    return { data: result };
   },
 
   updateMany: async (resource: string, params: { ids: (string | number)[]; data: unknown }) => {
