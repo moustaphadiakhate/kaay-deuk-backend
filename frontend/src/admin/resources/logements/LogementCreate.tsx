@@ -106,11 +106,19 @@ export const LogementCreate = () => (
       />
       <BooleanInput source="disponible" label="Disponible à la location" defaultValue={true} />
 
+      {/* ── Équipements ──────────────────────────────────────────────────── */}
+      <BooleanInput source="equipements.wifiHauteVitesse" label="WiFi Haute Vitesse" defaultValue={false} />
+      <BooleanInput source="equipements.garagePrivé" label="Garage Privé" defaultValue={false} />
+      <BooleanInput source="equipements.sécurité24h7" label="Sécurité 24/7" defaultValue={false} />
+      <BooleanInput source="equipements.climatisation" label="Climatisation" defaultValue={false} />
+
       {/* ── Photos du logement ───────────────────────────────────────────── */}
       <ImageUploaderInput source="images" label="Uploader des photos" />
       <ArrayInput source="images" label="Photos du logement">
         <SimpleFormIterator disableReordering>
           <TextInput source="url" label="URL" fullWidth validate={required()} />
+          <TextInput source="titre" label="Titre (ex: Salon, Chambre, Cour)" fullWidth validate={required()} />
+          <TextInput source="lieu" label="Lieu/Localisation (ex: Séjour principal)" fullWidth validate={required()} />
           <TextInput source="description" label="Description" fullWidth />
           <NumberInput source="ordreAffichage" label="Ordre d'affichage" validate={minValue(0)} defaultValue={0} />
         </SimpleFormIterator>
@@ -134,6 +142,8 @@ export const LogementCreate = () => (
             choices={TYPE_3D_CHOICES}
             defaultValue="360"
           />
+          <TextInput source="titre" label="Titre (ex: Salon, Chambre, Cour)" fullWidth validate={required()} />
+          <TextInput source="lieu" label="Lieu/Localisation (ex: Vue 360° du salon)" fullWidth validate={required()} />
           <TextInput source="description" label="Description" fullWidth />
           <NumberInput source="ordreAffichage" label="Ordre d'affichage" validate={minValue(0)} defaultValue={0} />
         </SimpleFormIterator>

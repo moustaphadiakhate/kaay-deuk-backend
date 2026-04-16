@@ -78,19 +78,20 @@ export class LogementsRepository {
   }
 
   async create(dto: CreateLogementDto) {
-    const { images, images3D, ...rest } = dto;
+    const { images, images3D, equipements, ...rest } = dto;
     return this.prisma.logement.create({
       data: {
         ...rest,
         images: (images ?? []) as unknown as Prisma.InputJsonValue,
         images3D: (images3D ?? []) as unknown as Prisma.InputJsonValue,
+        equipements: (equipements ?? {}) as unknown as Prisma.InputJsonValue,
       },
       include: LOGEMENT_INCLUDE,
     });
   }
 
   async update(id: number, dto: UpdateLogementDto) {
-    const { images, images3D, ...rest } = dto;
+    const { images, images3D, equipements, ...rest } = dto;
     const updateData: Prisma.LogementUpdateInput = { ...rest };
 
     if (images !== undefined) {
@@ -98,6 +99,9 @@ export class LogementsRepository {
     }
     if (images3D !== undefined) {
       updateData.images3D = images3D as unknown as Prisma.InputJsonValue;
+    }
+    if (equipements !== undefined) {
+      updateData.equipements = equipements as unknown as Prisma.InputJsonValue;
     }
 
     return this.prisma.logement.update({

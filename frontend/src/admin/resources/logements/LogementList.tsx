@@ -18,7 +18,9 @@ import {
   ExportButton,
   useListContext,
   Pagination,
+  useRefresh,
 } from 'react-admin';
+import { useEffect } from 'react';
 
 const logementFilters = [
   <TextInput key="ville" source="ville" label="Ville" alwaysOn />,
@@ -39,37 +41,16 @@ const LogementPagination = () => (
   <Pagination rowsPerPageOptions={[5, 10, 25, 50]} />
 );
 
-// Petit composant pour afficher le statut de disponibilité avec couleur
-const DispoField = ({ record }: { record?: { disponible?: boolean } }) => {
-  if (!record) return null;
+// Composant interne pour refetch les données au montage
+const LogementListContent = () => {
+  const refresh = useRefresh();
+  
+  // Refetch automatiquement quand on accède à la page
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+  
   return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 4,
-        padding: '3px 10px',
-        borderRadius: 20,
-        fontSize: 12,
-        fontWeight: 600,
-        background: record.disponible ? '#d1fae5' : '#fee2e2',
-        color: record.disponible ? '#065f46' : '#991b1b',
-      }}
-    >
-      {record.disponible ? '● Disponible' : '● Occupé'}
-    </span>
-  );
-};
-
-export const LogementList = () => (
-  <List
-    filters={logementFilters}
-    actions={<ListActions />}
-    pagination={<LogementPagination />}
-    sort={{ field: 'dateCreation', order: 'DESC' }}
-    perPage={10}
-    title="Logements — KaayDeuk"
-  >
     <Datagrid
       rowClick="show"
       sx={{
@@ -98,5 +79,18 @@ export const LogementList = () => (
       <ShowButton label="" />
       <DeleteButton label="" />
     </Datagrid>
+  );
+};
+
+export const LogementList = () => (
+  <List
+    filters={logementFilters}
+    actions={<ListActions />}
+    pagination={<LogementPagination />}
+    sort={{ field: 'dateCreation', order: 'DESC' }}
+    perPage={10}
+    title="Logements — KaayDeuk"
+  >
+    <LogementListContent />
   </List>
 );

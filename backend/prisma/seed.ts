@@ -34,7 +34,26 @@ async function main(): Promise<void> {
 
   console.log('✅ Admin créé:', adminUser.email);
 
+  // ── Types de Logement ─────────────────────────────────────────────────────
+  const typeLogements = [
+    'Appartement',
+    'Maison',
+    'Villa',
+    'Studio',
+    'Chambre',
+  ];
 
+  const createdTypes = [];
+  for (const typeLibelle of typeLogements) {
+    const typeLogement = await prisma.typeLogement.upsert({
+      where: { libelle: typeLibelle },
+      update: {},
+      create: { libelle: typeLibelle },
+    });
+    createdTypes.push(typeLogement);
+  }
+
+  console.log(`✅ ${createdTypes.length} types de logement créés`);
 
   console.log('\n🎉 Seed terminé avec succès !');
   console.log(`\n📧 Admin : ${adminEmail}`);

@@ -46,6 +46,10 @@ async function bootstrap(): Promise<void> {
   const httpAdapter = app.getHttpAdapter();
   const expressApp = httpAdapter.getInstance() as express.Application;
 
+  // ── Limites de payload pour images 3D (configurer AVANT les routes) ─────────
+  expressApp.use(express.json({ limit: '50mb' }));
+  expressApp.use(express.urlencoded({ limit: '50mb', extended: true }));
+
   // Fichiers uploadés (images logements)
   expressApp.use('/uploads', express.static(uploadsDir, { maxAge: '7d' }));
 

@@ -77,11 +77,19 @@ export const LogementEdit = () => (
       <NumberInput source="nombrePieces" label="Nombre de pièces" validate={[required(), minValue(1)]} />
       <BooleanInput source="disponible" label="Disponible à la location" />
 
+      {/* ── Équipements ──────────────────────────────────────────────────── */}
+      <BooleanInput source="equipements.wifiHauteVitesse" label="WiFi Haute Vitesse" />
+      <BooleanInput source="equipements.garagePrivé" label="Garage Privé" />
+      <BooleanInput source="equipements.sécurité24h7" label="Sécurité 24/7" />
+      <BooleanInput source="equipements.climatisation" label="Climatisation" />
+
       {/* ── Photos du logement ───────────────────────────────────────────── */}
       <ImageUploaderInput source="images" label="Uploader de nouvelles photos" />
       <ArrayInput source="images" label="Photos du logement">
         <SimpleFormIterator disableReordering>
           <TextInput source="url" label="URL" fullWidth validate={required()} />
+          <TextInput source="titre" label="Titre (ex: Salon, Chambre, Cour)" fullWidth validate={required()} />
+          <TextInput source="lieu" label="Lieu/Localisation (ex: Séjour principal)" fullWidth validate={required()} />
           <TextInput source="description" label="Description" fullWidth />
           <NumberInput source="ordreAffichage" label="Ordre d'affichage" validate={minValue(0)} />
         </SimpleFormIterator>
@@ -104,6 +112,8 @@ export const LogementEdit = () => (
             choices={TYPE_3D_CHOICES}
             defaultValue="360"
           />
+          <TextInput source="titre" label="Titre (ex: Salon, Chambre, Cour)" fullWidth validate={required()} />
+          <TextInput source="lieu" label="Lieu/Localisation (ex: Vue 360° du salon)" fullWidth validate={required()} />
           <TextInput source="description" label="Description" fullWidth />
           <NumberInput source="ordreAffichage" label="Ordre d'affichage" validate={minValue(0)} />
         </SimpleFormIterator>

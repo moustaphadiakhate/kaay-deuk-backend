@@ -13,13 +13,45 @@ import {
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
+export class EquipementDto {
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  @IsBoolean()
+  wifiHauteVitesse?: boolean;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  @IsBoolean()
+  garagePrivé?: boolean;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  @IsBoolean()
+  sécurité24h7?: boolean;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  @IsBoolean()
+  climatisation?: boolean;
+}
+
 export class ImageDto {
   @ApiProperty({ example: 'https://example.com/photo.jpg' })
   @IsString()
   @IsNotEmpty()
   url: string;
 
-  @ApiPropertyOptional({ example: 'Vue du salon' })
+  @ApiProperty({ example: 'Salon' })
+  @IsString()
+  @IsNotEmpty()
+  titre: string;
+
+  @ApiProperty({ example: 'Séjour principal avec vue sur le jardin' })
+  @IsString()
+  @IsNotEmpty()
+  lieu: string;
+
+  @ApiPropertyOptional({ example: 'Vue du salon principal' })
   @IsOptional()
   @IsString()
   description?: string;
@@ -35,6 +67,16 @@ export class Image3DDto {
   @IsString()
   @IsNotEmpty()
   url: string;
+
+  @ApiProperty({ example: 'Salon' })
+  @IsString()
+  @IsNotEmpty()
+  titre: string;
+
+  @ApiProperty({ example: 'Visite 360° du salon' })
+  @IsString()
+  @IsNotEmpty()
+  lieu: string;
 
   @ApiPropertyOptional({ example: 'Visite 360° complète' })
   @IsOptional()
@@ -108,6 +150,12 @@ export class CreateLogementDto {
   @IsInt()
   @IsPositive()
   typeLogementId: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => EquipementDto)
+  equipements?: EquipementDto;
 
   @ApiPropertyOptional({ type: [ImageDto] })
   @IsOptional()

@@ -56,6 +56,8 @@ export const ImageUploaderInput = ({ source, label, type3DSource }: Props) => {
 
         const newItems = uploaded.map((u, i) => ({
           url: u.url,
+          titre: '', // À remplir par l'admin
+          lieu: '', // À remplir par l'admin
           description: '',
           ordreAffichage: existing.length + i,
           ...(type3D !== undefined ? { type: type3D } : {}),
