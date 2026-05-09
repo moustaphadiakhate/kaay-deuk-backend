@@ -140,6 +140,9 @@ export class AuthService {
         nom: utilisateur.nom,
         telephone: utilisateur.telephone,
         typeUtilisateur: utilisateur.typeUtilisateur,
+        chercheur: utilisateur.chercheur ? {
+          id: utilisateur.chercheur.id,
+        } : null,
       },
     };
   }
@@ -196,6 +199,9 @@ export class AuthService {
           nom: utilisateur.nom,
           telephone: utilisateur.telephone,
           typeUtilisateur: utilisateur.typeUtilisateur,
+          chercheur: utilisateur.chercheur ? {
+            id: utilisateur.chercheur.id,
+          } : null,
         },
       };
     } catch (error) {
