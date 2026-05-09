@@ -1,7 +1,7 @@
 export interface JwtPayload {
   sub: number;
   email: string;
-  type: 'SUPER_ADMIN' | 'ADMINISTRATEUR';
+  type: string;
   iat?: number;
   exp?: number;
 }
