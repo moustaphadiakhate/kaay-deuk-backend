@@ -52,4 +52,17 @@ export class Visites3DController {
   async getHistorique(@Param('chercheurId', ParseIntPipe) chercheurId: number) {
     return this.visites3DService.getHistoriqueVisites(chercheurId);
   }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Récupérer toutes les visites 3D (pour l\'admin)' })
+  @ApiResponse({ status: 200, description: 'Toutes les visites 3D' })
+  async getAllVisites3D(@Request() req: any) {
+    const page = parseInt(req.query.page || '1', 10);
+    const limit = parseInt(req.query.limit || '10', 10);
+    const skip = (page - 1) * limit;
+    const take = limit;
+    return this.visites3DService.getAllVisites3D(skip, take);
+  }
 }

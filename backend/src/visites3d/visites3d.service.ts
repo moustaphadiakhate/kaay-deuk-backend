@@ -88,9 +88,12 @@ export class Visites3DService {
       },
     });
 
+    // Recalculer la vérification APRÈS création pour avoir les données à jour
+    const verificationAfter = await this.verifierAccesVisite3D(chercheurId);
+
     return {
       visite,
-      ...verification,
+      ...verificationAfter,
     };
   }
 
@@ -123,6 +126,47 @@ export class Visites3DService {
       visites,
       nombreVisites,
       ...verification,
+    };
+  }
+
+  /**
+   * Récupère toutes les visites 3D (pour l'admin)
+   */
+  async getAllVisites3D(skip: number = 0, take: number = 50) {
+    const [visites, total] = await Promise.all([
+      this.prisma.visite3D.findMany({
+        skip,
+        take,
+        include: {
+          chercheur: {
+            include: {
+              utilisateur: {
+                select: {
+                  nom: true,
+                  email: true,
+                },
+              },
+            },
+          },
+          logement: {
+            select: {
+              id: true,
+              titre: true,
+              ville: true,
+              prix: true,
+            },
+          },
+        },
+        orderBy: {
+          dateVisite: 'desc',
+        },
+      }),
+      this.prisma.visite3D.count(),
+    ]);
+
+    return {
+      data: visites,
+      total,
     };
   }
 }

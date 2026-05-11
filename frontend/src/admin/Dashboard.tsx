@@ -6,6 +6,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import BookOnlineIcon from '@mui/icons-material/BookOnline';
 import PersonIcon from '@mui/icons-material/Person';
 import PaymentIcon from '@mui/icons-material/Payment';
+import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
 
 const sections = [
   {
@@ -37,6 +38,12 @@ const sections = [
     description: 'Consulter les paiements effectués',
     icon: <PaymentIcon sx={{ fontSize: 40, color: '#C8501A' }} />,
     path: '/paiements',
+  },
+  {
+    label: 'Visites 3D',
+    description: 'Consulter les visites 3D effectuées',
+    icon: <ThreeDRotationIcon sx={{ fontSize: 40, color: '#C8501A' }} />,
+    path: '/visites-3d',
   },
 ];
 

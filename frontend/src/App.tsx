@@ -17,6 +17,8 @@ import { UtilisateurList } from './admin/resources/utilisateurs/UtilisateurList'
 import { UtilisateurShow } from './admin/resources/utilisateurs/UtilisateurShow';
 import { PaiementList } from './admin/resources/paiements/PaiementList';
 import { PaiementShow } from './admin/resources/paiements/PaiementShow';
+import { Visite3DList } from './admin/resources/visites-3d/Visite3DList';
+import { Visite3DShow } from './admin/resources/visites-3d/Visite3DShow';
 
 const theme = {
   palette: {
@@ -74,6 +76,12 @@ export default function App() {
           list={PaiementList}
           show={PaiementShow}
           options={{ label: 'Paiements' }}
+        />
+        <Resource
+          name="visites-3d"
+          list={Visite3DList}
+          show={Visite3DShow}
+          options={{ label: 'Visites 3D' }}
         />
       </Admin>
     </BrowserRouter>
