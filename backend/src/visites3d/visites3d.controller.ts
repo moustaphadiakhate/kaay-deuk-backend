@@ -65,4 +65,14 @@ export class Visites3DController {
     const take = limit;
     return this.visites3DService.getAllVisites3D(skip, take);
   }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Récupérer une visite 3D par son ID (pour l\'admin)' })
+  @ApiResponse({ status: 200, description: 'Visite 3D trouvée' })
+  @ApiResponse({ status: 404, description: 'Visite 3D introuvable' })
+  async getVisite3DById(@Param('id', ParseIntPipe) id: number) {
+    return this.visites3DService.getVisite3DById(id);
+  }
 }

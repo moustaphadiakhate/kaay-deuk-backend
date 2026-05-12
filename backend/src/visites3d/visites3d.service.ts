@@ -169,4 +169,39 @@ export class Visites3DService {
       total,
     };
   }
+
+  /**
+   * Récupère une visite 3D par son ID (pour l'admin)
+   */
+  async getVisite3DById(id: number) {
+    const visite = await this.prisma.visite3D.findUnique({
+      where: { id },
+      include: {
+        chercheur: {
+          include: {
+            utilisateur: {
+              select: {
+                nom: true,
+                email: true,
+              },
+            },
+          },
+        },
+        logement: {
+          select: {
+            id: true,
+            titre: true,
+            ville: true,
+            prix: true,
+          },
+        },
+      },
+    });
+
+    if (!visite) {
+      throw new NotFoundException(`Visite 3D #${id} introuvable`);
+    }
+
+    return visite;
+  }
 }

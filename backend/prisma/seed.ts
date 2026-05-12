@@ -17,7 +17,7 @@ async function main(): Promise<void> {
     create: {
       nom: 'Super Admin',
       email: adminEmail,
-      telephone: '+221 77 000 00 00',
+      telephone: '+221 77 471 91 08',
       motDePasse: hashedPassword,
       typeUtilisateur: 'ADMINISTRATEUR',
     },
