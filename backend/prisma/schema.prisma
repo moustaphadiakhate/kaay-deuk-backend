@@ -1,16 +1,3 @@
-model AchatBriqueLogement {
-  id           Int      @id @default(autoincrement())
-  chercheurId  Int
-  logementId   Int
-  montant      Int      // nombre de briques achetées pour ce logement
-  dateAchat    DateTime @default(now())
-
-  chercheur    Chercheur @relation(fields: [chercheurId], references: [id], onDelete: Cascade)
-  logement     Logement  @relation(fields: [logementId], references: [id], onDelete: Cascade)
-
-  @@unique([chercheurId, logementId])
-  @@map("achats_briques_logement")
-}
 // schema.prisma — KaayDeuk
 // Modifié : Image et Image3D remplacés par Json dans Logement
 
