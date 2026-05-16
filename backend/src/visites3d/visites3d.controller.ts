@@ -29,6 +29,18 @@ export class Visites3DController {
     return this.visites3DService.verifierAccesVisite3D(chercheurId);
   }
 
+  @Get('verifier-acces/:chercheurId/:logementId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Vérifier si un chercheur peut accéder à la visite 3D d\'un logement' })
+  @ApiResponse({ status: 200, description: 'Statut d\'accès retourné' })
+  async verifierAccesParLogement(
+    @Param('chercheurId', ParseIntPipe) chercheurId: number,
+    @Param('logementId', ParseIntPipe) logementId: number,
+  ) {
+    return this.visites3DService.verifierAccesVisite3D(chercheurId, logementId);
+  }
+
   @Post('enregistrer')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('JWT-auth')

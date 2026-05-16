@@ -9,21 +9,40 @@ export class Visites3DService {
 
   /**
    * Vérifie si l'utilisateur peut accéder à une visite 3D.
-   * La première visite est gratuite. Les suivantes coûtent 200 Briques.
+   * La première visite d'un logement est gratuite.
+   * Si le même utilisateur a déjà visité ce même logement, l'accès reste gratuit.
+   * Sinon, les visites suivantes coûtent 200 Briques.
    */
-  async verifierAccesVisite3D(chercheurId: number) {
-    const nombreVisites = await this.prisma.visite3D.count({
-      where: { chercheurId },
-    });
-
+  async verifierAccesVisite3D(chercheurId: number, logementId?: number) {
     const chercheur = await this.prisma.chercheur.findUnique({
       where: { id: chercheurId },
       select: { briques: true },
     });
     if (!chercheur) throw new NotFoundException('Chercheur introuvable');
 
-    // La première visite est gratuite
-    if (nombreVisites === 0) {
+    const nombreVisitesGlobales = await this.prisma.visite3D.count({
+      where: { chercheurId },
+    });
+
+    const nombreVisitesPourLogement = logementId
+      ? await this.prisma.visite3D.count({
+        where: { chercheurId, logementId },
+      })
+      : 0;
+
+    if (logementId && nombreVisitesPourLogement > 0) {
+      return {
+        acces: true,
+        gratuit: true,
+        nombreVisitesEffectuees: nombreVisitesPourLogement,
+        briques: chercheur.briques,
+        coutVisite: COUT_VISITE_BRIQUES,
+        message: 'Ce logement a déjà été visité par cet utilisateur',
+      };
+    }
+
+    // La toute première visite du compte reste gratuite
+    if (nombreVisitesGlobales === 0) {
       return {
         acces: true,
         gratuit: true,
@@ -39,11 +58,13 @@ export class Visites3DService {
     return {
       acces: aSuffisamment,
       gratuit: false,
-      nombreVisitesEffectuees: nombreVisites,
+      nombreVisitesEffectuees: logementId ? nombreVisitesPourLogement : nombreVisitesGlobales,
       briques: chercheur.briques,
       coutVisite: COUT_VISITE_BRIQUES,
       message: aSuffisamment
-        ? `Accès autorisé — ${chercheur.briques} briques disponibles`
+        ? logementId
+          ? `Accès autorisé pour ce logement — ${chercheur.briques} briques disponibles`
+          : `Accès autorisé — ${chercheur.briques} briques disponibles`
         : `Solde insuffisant. Il vous faut ${COUT_VISITE_BRIQUES} briques (vous en avez ${chercheur.briques}).`,
     };
   }
@@ -69,7 +90,7 @@ export class Visites3DService {
       throw new NotFoundException('Chercheur introuvable');
     }
 
-    const verification = await this.verifierAccesVisite3D(chercheurId);
+    const verification = await this.verifierAccesVisite3D(chercheurId, logementId);
 
     if (!verification.acces) {
       throw new ForbiddenException(verification.message);
@@ -104,7 +125,7 @@ export class Visites3DService {
     const results = await this.prisma.$transaction(operations);
     const visite = results[0];
 
-    const verificationAfter = await this.verifierAccesVisite3D(chercheurId);
+    const verificationAfter = await this.verifierAccesVisite3D(chercheurId, logementId);
 
     return {
       visite,
