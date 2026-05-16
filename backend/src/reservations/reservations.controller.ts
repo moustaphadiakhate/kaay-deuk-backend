@@ -1,12 +1,15 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Param,
   Query,
   Body,
   ParseIntPipe,
   UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -17,7 +20,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ReservationsService } from './reservations.service';
+import { ReservationsService, CreateReservationDto } from './reservations.service';
 import { FilterReservationDto } from './dto/filter-reservation.dto';
 import { IsString, IsIn } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -41,6 +44,14 @@ export class ReservationsController {
   @ApiResponse({ status: 200, description: '{ data, total, page, limit }' })
   findAll(@Query() filters: FilterReservationDto) {
     return this.service.findAll(filters);
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Créer une réservation (admin)' })
+  @ApiResponse({ status: 201, description: 'Réservation créée' })
+  create(@Body() dto: CreateReservationDto) {
+    return this.service.create(dto);
   }
 
   @Get(':id')

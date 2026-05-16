@@ -15,6 +15,16 @@ const RESERVATION_INCLUDE = {
   },
 } satisfies Prisma.ReservationInclude;
 
+export class CreateReservationDto {
+  chercheurId: number;
+  logementId: number;
+  dateDebut: string;
+  dateFin: string;
+  montantTotal: number;
+  acompte?: number;
+  statut?: string;
+}
+
 @Injectable()
 export class ReservationsService {
   constructor(private readonly prisma: PrismaService) { }
@@ -69,6 +79,26 @@ export class ReservationsService {
     return this.prisma.reservation.update({
       where: { id },
       data: { statut },
+      include: RESERVATION_INCLUDE,
+    });
+  }
+
+  async create(dto: CreateReservationDto) {
+    const chercheur = await this.prisma.chercheur.findUnique({ where: { id: dto.chercheurId } });
+    if (!chercheur) throw new NotFoundException(`Chercheur #${dto.chercheurId} introuvable`);
+    const logement = await this.prisma.logement.findUnique({ where: { id: dto.logementId } });
+    if (!logement) throw new NotFoundException(`Logement #${dto.logementId} introuvable`);
+
+    return this.prisma.reservation.create({
+      data: {
+        chercheurId: dto.chercheurId,
+        logementId: dto.logementId,
+        dateDebut: new Date(dto.dateDebut),
+        dateFin: new Date(dto.dateFin),
+        montantTotal: dto.montantTotal,
+        acompte: dto.acompte,
+        statut: dto.statut || 'EN_ATTENTE',
+      },
       include: RESERVATION_INCLUDE,
     });
   }

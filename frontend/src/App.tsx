@@ -13,12 +13,15 @@ import { AdminEdit } from './admin/resources/admins/AdminEdit';
 import { AdminShow } from './admin/resources/admins/AdminShow';
 import { ReservationList } from './admin/resources/reservations/ReservationList';
 import { ReservationShow } from './admin/resources/reservations/ReservationShow';
+import { ReservationCreate } from './admin/resources/reservations/ReservationCreate';
 import { UtilisateurList } from './admin/resources/utilisateurs/UtilisateurList';
 import { UtilisateurShow } from './admin/resources/utilisateurs/UtilisateurShow';
 import { PaiementList } from './admin/resources/paiements/PaiementList';
 import { PaiementShow } from './admin/resources/paiements/PaiementShow';
 import { Visite3DList } from './admin/resources/visites-3d/Visite3DList';
 import { Visite3DShow } from './admin/resources/visites-3d/Visite3DShow';
+import { BriquesList } from './admin/resources/briques/BriquesList';
+import { BriquesAttribuer } from './admin/resources/briques/BriquesAttribuer';
 
 const theme = {
   palette: {
@@ -62,6 +65,7 @@ export default function App() {
         <Resource
           name="reservations"
           list={ReservationList}
+          create={ReservationCreate}
           show={ReservationShow}
           options={{ label: 'Réservations' }}
         />
@@ -82,6 +86,12 @@ export default function App() {
           list={Visite3DList}
           show={Visite3DShow}
           options={{ label: 'Visites 3D' }}
+        />
+        <Resource
+          name="briques"
+          list={BriquesList}
+          create={BriquesAttribuer}
+          options={{ label: '🧱 Briques' }}
         />
       </Admin>
     </BrowserRouter>

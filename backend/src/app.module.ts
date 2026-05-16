@@ -9,6 +9,7 @@ import { ReservationsModule } from './reservations/reservations.module';
 import { UtilisateursModule } from './utilisateurs/utilisateurs.module';
 import { PaiementsModule } from './paiements/paiements.module';
 import { Visites3DModule } from './visites3d/visites3d.module';
+import { BriquesModule } from './briques/briques.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { Visites3DModule } from './visites3d/visites3d.module';
     UtilisateursModule,
     PaiementsModule,
     Visites3DModule,
+    BriquesModule,
   ],
 })
 export class AppModule { }

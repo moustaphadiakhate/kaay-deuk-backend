@@ -28,12 +28,14 @@ model Utilisateur {
 model Chercheur {
   id            Int         @id @default(autoincrement())
   utilisateurId Int         @unique
+  briques       Int         @default(0)
   utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
 
-  favoris      Favori[]
-  reservations Reservation[]
-  visites3D    Visite3D[]
-  locataire    Locataire?
+  favoris              Favori[]
+  reservations         Reservation[]
+  visites3D            Visite3D[]
+  locataire            Locataire?
+  transactionsBriques  TransactionBriques[]
 
   @@map("chercheurs")
 }
@@ -166,4 +168,18 @@ model Visite3D {
   logement  Logement  @relation(fields: [logementId], references: [id], onDelete: Cascade)
 
   @@map("visites_3d")
+}
+
+model TransactionBriques {
+  id           Int      @id @default(autoincrement())
+  type         String   // ACHAT | UTILISATION | ATTRIBUTION
+  montant      Int      // nombre de briques
+  description  String?
+  reference    String?  @unique
+  dateCreation DateTime @default(now())
+
+  chercheurId Int
+  chercheur   Chercheur @relation(fields: [chercheurId], references: [id], onDelete: Cascade)
+
+  @@map("transactions_briques")
 }

@@ -94,6 +94,14 @@ export const dataProvider: DataProvider = {
   },
 
   create: async (resource: string, params: CreateParams) => {
+    // Endpoint spécial pour l'attribution de briques
+    if (resource === 'briques/attribuer-admin') {
+      const result = await httpClient(`${API_URL}/briques/attribuer`, {
+        method: 'POST',
+        body: JSON.stringify(params.data),
+      });
+      return { data: { id: result?.transaction?.id ?? Date.now(), ...result } };
+    }
     const result = await httpClient(`${API_URL}/${resource}`, {
       method: 'POST',
       body: JSON.stringify(params.data),

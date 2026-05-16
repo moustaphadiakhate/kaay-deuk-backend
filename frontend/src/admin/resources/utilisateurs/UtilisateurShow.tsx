@@ -25,6 +25,17 @@ export const UtilisateurShow = () => (
 
       {/* Infos chercheur */}
       <FunctionField
+        label="Solde Briques 🧱"
+        render={(r: any) => {
+          const briques = r.chercheur?.briques ?? 0;
+          return (
+            <span style={{ fontWeight: 'bold', color: '#FF9500', fontSize: 14 }}>
+              {briques} Briques
+            </span>
+          );
+        }}
+      />
+      <FunctionField
         label="Locataire"
         render={(r: any) =>
           r.chercheur?.locataire
